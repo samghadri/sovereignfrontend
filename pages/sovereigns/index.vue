@@ -22,8 +22,8 @@
       </b-dropdown>
     </div>
 
-    <div v-if="coins && coins.length > 0 ">
-      <div v-for="coin in coins" :key="coin.id">
+    <div v-if="coins.result && coins.result.length > 0 ">
+      <div v-for="coin in coins.result" :key="coin.id">
         <p>{{ coin.name }}</p>
       </div>
     </div>
@@ -57,13 +57,19 @@ export default {
   },
 
   methods: {
-    filterByTag (tag) {
-      this.tags.push(tag)
-      this.filters.tags = this.tags.join('|')
-      this.$router.push({
-        query: this.filters
-      })
-    },
+    filterByTag(tag) {
+        if (this.tags.includes(tag)) { // check if the tags exists already
+          this.tags.splice(this.tags.indexOf(tag), 1); // remove the string from the array if it matches
+          this.$router.push({
+            query: Object.assign({}, this.$route.query, {tags: this.tags.join('|')}) // update the url query
+          })
+        } else {
+          this.tags.push(tag); // push the value to the tags array
+          this.$router.push({
+            query: Object.assign({}, this.$route.query, {tags: this.tags.join('|')}) // update the url query
+          })
+        }
+      },
     filterByCoinType (coinType) {
       this.filters.metal_type = coinType
       this.$router.push({
