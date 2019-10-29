@@ -1,23 +1,23 @@
 <template>
-  <div>
-    <button @click="filterByCoinType('G')">
+  <div class="container">
+    <div>
+      <input class="mt-5 mb-5" type="text" style="height: 2.3rem;" @keydown.enter="searchButton()" v-model="searchText">
+      <button class="btn btn-success d-inline-block" v-on:click.prevent="searchButton()">Search</button>
+    </div>
+    <button class="btn btn-primary" @click="filterByCoinType('G')">
       Gold
     </button>
-    <button @click="filterByCoinType('S')">
+    <button class="btn btn-primary" @click="filterByCoinType('S')">
       Silver
     </button>
-    <button @click="filterByCoinType('C')">
+    <button class="btn btn-primary" @click="filterByCoinType('C')">
       Copper
     </button>
 
-    <div>
-      <b-dropdown id="dropdown-1" text="Tags" class="m-md-2">
-        <b-dropdown-item @click="filterByTag('shieldback')">
-          Shieldback
-        </b-dropdown-item>
-        <b-dropdown-item>200 anniversary</b-dropdown-item>
-        <b-dropdown-item @click="filterByTag('victoria')">
-          Victoria
+    <div class="d-inline-block">
+      <b-dropdown id="dropdown-1" text="Tags" class="m-md-2" v-if="cointags.result && cointags.result.length > 0">
+        <b-dropdown-item v-for="tag in cointags.result" @click="filterByTag(tag.name)">
+          {{tag.name}}
         </b-dropdown-item>
       </b-dropdown>
     </div>
@@ -33,7 +33,8 @@
 <script>
 export default {
       async mounted () {
-    await this.$store.dispatch('getCoin', this.query ? this.query : '')
+    await this.$store.dispatch('getCoin', this.query ? this.query : ''),
+    await this.$store.dispatch('getTag')
   },
   data () {
     return {
@@ -42,18 +43,36 @@ export default {
       filters: {
         tags: this.$route.query.tags ? this.$route.query.tags : '',
         metal_type: this.$route.query.metal_type ? this.$route.query.metal_type : ''
-      }
+      },
+      searchText: ""
     }
   },
   computed: {
     coins () {
       return this.$store.getters.getCoin
+    },
+    cointags(){
+      return this.$store.getters.getTag
     }
   },
   watch: {
     $route (newval) {
       this.$store.dispatch('getCoin', this.$route.query)
-    }
+    },
+
+      // this is just another way of searching without using button submit - this will watch the input and as you type it will search
+
+    // searchText(){
+    //   if(this.searchText !== ""){
+    //     this.$router.push({
+    //         query: Object.assign({}, this.$route.query, {searchText: this.searchText}) // update the url query
+    //       })
+    //   }else{
+    //     this.$router.push({
+    //         query: Object.assign({}, this.$route.query, {searchText: null}) // update the url query
+    //       })
+    //   }
+    // }
   },
 
   methods: {
@@ -75,6 +94,13 @@ export default {
       this.$router.push({
         query: this.filters
       })
+    },
+    searchButton(){
+      if(this.searchText !== ""){
+        this.$router.push({
+            query: Object.assign({}, this.$route.query, {searchText: this.searchText}) // update the url query
+          })
+      }
     }
   }
 }
