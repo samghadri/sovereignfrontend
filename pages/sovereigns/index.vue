@@ -13,6 +13,7 @@
     <button class="btn btn-primary" @click="filterByCoinType('C')">
       Copper
     </button>
+    <button @click="clearFilter()">Clear Filter</button>
 
     <div class="d-inline-block">
       <b-dropdown id="dropdown-1" text="Tags" class="m-md-2" v-if="cointags.result && cointags.result.length > 0">
@@ -23,9 +24,32 @@
     </div>
 
     <div v-if="coins.result && coins.result.length > 0 ">
+      <hr>
       <div v-for="coin in coins.result" :key="coin.id">
         <p>{{ coin.name }}</p>
+        <p> <span class="font-weight-bold">year of mintage:</span>  {{ coin.year_of_mintage }}</p>
+        <p><span>Metal Type:</span> {{ coin.metal_type}}</p>
+        <hr>
       </div>
+
+      <div v-if="coins.count > filters.limit" class="mt-5">
+        <paginate
+          v-model="currentPage"
+          :page-count="totalRows"
+          :click-handler="nextPage"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :page-link-class="'page-link'"
+          :pageClass="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'"
+          :containerClass="'pagination justify-content-center'"
+        ></paginate>
+        
+      </div>
+      
     </div>
   </div>
 </template>
@@ -33,8 +57,20 @@
 <script>
 export default {
       async mounted () {
-    await this.$store.dispatch('getCoin', this.query ? this.query : ''),
-    await this.$store.dispatch('getTag')
+    await this.$store.dispatch('getCoin', this.query ? this.query : '');
+    await this.$store.dispatch('getTag');
+    // let hello = [];
+  // if(this.cointags && this.cointags.length > 0){
+  //   console.log(this.cointags)
+  // }
+    
+    // this.cointags.result.forEach((tag) =>{
+    //   hello.push(tag.name)
+    // })
+    //     this.cointags.result.map((tag) =>{
+    //   hello.push(tag.name)
+    // })
+    // console.log(hello)   
   },
   data () {
     return {
@@ -42,8 +78,11 @@ export default {
       tags: [],
       filters: {
         tags: this.$route.query.tags ? this.$route.query.tags : '',
-        metal_type: this.$route.query.metal_type ? this.$route.query.metal_type : ''
+        metal_type: this.$route.query.metal_type ? this.$route.query.metal_type : '',
+        limit: 2,
+        offset: 0
       },
+      currentPage: this.$route.query.offset !== 0 ? this.$route.query.offset / 2 + 1 : 1,
       searchText: ""
     }
   },
@@ -53,6 +92,9 @@ export default {
     },
     cointags(){
       return this.$store.getters.getTag
+    },
+    totalRows(){
+      return Math.ceil(this.coins.count / 2);
     }
   },
   watch: {
@@ -76,7 +118,7 @@ export default {
   },
 
   methods: {
-    filterByTag(tag) {
+    async filterByTag(tag) {
         if (this.tags.includes(tag)) { // check if the tags exists already
           this.tags.splice(this.tags.indexOf(tag), 1); // remove the string from the array if it matches
           this.$router.push({
@@ -89,11 +131,24 @@ export default {
           })
         }
       },
-    filterByCoinType (coinType) {
+    async filterByCoinType (coinType) {
       this.filters.metal_type = coinType
       this.$router.push({
         query: this.filters
       })
+    },
+    clearFilter(){
+      if(this.query !== ''){
+        this.$router.push({
+        query: ''
+      })
+      }
+      
+    },
+    async nextPage(pageNum){
+          this.$router.push({
+            query: Object.assign({}, this.$route.query, {offset:(this.filters.offset = 2 * pageNum - 2)}) // update the url query
+          })
     },
     searchButton(){
       if(this.searchText !== ""){

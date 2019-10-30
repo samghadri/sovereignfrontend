@@ -41,7 +41,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    "~/plugins/plugins.js"
+    "~/plugins/plugins.js",
+    {src: '~/plugins/vue-paginate.js', ssr: false},
   ],
 
   /*
