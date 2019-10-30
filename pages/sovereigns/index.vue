@@ -1,9 +1,15 @@
 <template>
   <div class="container">
-    <div>
+    <div class="input-group mb-3 mt-5">
+  <input type="text" class="form-control" @keydown.enter="searchButton()" v-model="searchText" placeholder="Search for Coin" aria-label="Search for Coin" aria-describedby="basic-addon2">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" v-on:click.prevent="searchButton()">Search</button>
+  </div>
+</div>
+    <!-- <div>
       <input class="mt-5 mb-5" type="text" style="height: 2.3rem;" @keydown.enter="searchButton()" v-model="searchText">
       <button class="btn btn-success d-inline-block" v-on:click.prevent="searchButton()">Search</button>
-    </div>
+    </div> -->
     <button class="btn btn-primary" @click="filterByCoinType('G')">
       Gold
     </button>
@@ -26,9 +32,23 @@
     <div v-if="coins.result && coins.result.length > 0 ">
       <hr>
       <div v-for="coin in coins.result" :key="coin.id">
-        <p>{{ coin.name }}</p>
-        <p> <span class="font-weight-bold">year of mintage:</span>  {{ coin.year_of_mintage }}</p>
-        <p><span>Metal Type:</span> {{ coin.metal_type}}</p>
+        <div class="row">
+          <div class="col-7">
+            <p>{{ coin.name }}</p>
+          </div>
+          <div class="col-3">
+            <p> <span class="font-weight-bold">year of mintage:</span>  {{ coin.year_of_mintage }}</p>
+          </div>
+          <div class="col-2">
+                    <p><span class="font-weight-bold">Metal Type:</span> {{ getMetalType(coin.metal_type)}}</p>
+          </div>
+          <div class="col-12 mt-5">
+              <p v-if="coin.description">{{ coin.description }}</p>
+          </div>
+
+        </div>
+        
+
         <hr>
       </div>
 
@@ -155,6 +175,17 @@ export default {
         this.$router.push({
             query: Object.assign({}, this.$route.query, {searchText: this.searchText}) // update the url query
           })
+      }
+    },
+    getMetalType(result){
+      if(result === "G"){
+        return "GOLD"
+      }
+      else if(result === "S"){
+        return "SILVER";
+      }
+      else{
+        return "COPPER";
       }
     }
   }
