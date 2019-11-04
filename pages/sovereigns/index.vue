@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="input-group mb-3 mt-5">
+  <div>
+    <!-- <div class="input-group mb-3 mt-5">
       <input
         type="text"
         class="form-control"
@@ -17,15 +17,15 @@
           v-on:click.prevent="searchButton()"
         >Search</button>
       </div>
-    </div>
+    </div>-->
+    <Search class="mt-5"/>
     <!-- <div>
       <input class="mt-5 mb-5" type="text" style="height: 2.3rem;" @keydown.enter="searchButton()" v-model="searchText">
       <button class="btn btn-success d-inline-block" v-on:click.prevent="searchButton()">Search</button>
     </div>-->
-    <button class="btn btn-primary" @click="filterByCoinType('G')">Gold</button>
-    <button class="btn btn-primary" @click="filterByCoinType('S')">Silver</button>
-    <button class="btn btn-primary" @click="filterByCoinType('C')">Copper</button>
-    <button @click="clearFilter()">Clear Filter</button>
+    <button class="btn btn-info" @click="filterByCoinType('G')">Gold</button>
+    <button class="btn btn-info" @click="filterByCoinType('S')">Silver</button>
+    <button class="btn btn-info" @click="filterByCoinType('C')">Copper</button>
 
     <div class="d-inline-block">
       <b-dropdown
@@ -36,6 +36,9 @@
       >
         <b-dropdown-item v-for="tag in cointags.result" @click="filterByTag(tag.name)">{{tag.name}}</b-dropdown-item>
       </b-dropdown>
+    </div>
+    <div class="text-right">
+      <button class="btn btn-secondary" @click="clearFilter()">Clear Filter</button>
     </div>
 
     <div v-if="coins.result && coins.result.length > 0 ">
@@ -61,8 +64,13 @@
             <p v-if="coin.description">{{ coin.description }}</p>
           </div>
           <div class="col-12 mt-5 text-center">
-            <img v-if="coin.image_url" :src="coin.image_url" alt="" class="img-fluid" style="max-height:400px">
-
+            <img
+              v-if="coin.image_url"
+              :src="coin.image_url"
+              alt
+              class="img-fluid"
+              style="max-height:400px"
+            >
           </div>
         </div>
 
@@ -90,13 +98,16 @@
 </template>
 
 <script>
+import Search from "~/components/Search";
 export default {
+  components: {
+    Search
+  },
   async mounted() {
-    
     await this.$store.dispatch("getCoin", this.query ? this.query : "");
     await this.$store.dispatch("getTag");
-    console.log("Store", this.$store.getters.getError);
-
+    console.log("the query", this.$route.query);
+    console.log(this.getQueryassign());
     // let hello = [];
     // if(this.cointags && this.cointags.length > 0){
     //   console.log(this.cointags)
@@ -136,6 +147,9 @@ export default {
     },
     totalRows() {
       return Math.ceil(this.coins.count / 2);
+    },
+    error() {
+      return this.$store.getters.getError;
     }
   },
   watch: {
@@ -173,7 +187,7 @@ export default {
         this.$router.push({
           query: Object.assign({}, this.$route.query, {
             tags: this.tags.join("|")
-          }) // update the url query
+          }) // update the url query | gets the query key and get the lat object an apend it into the new object if, key exist, then it will replace it with the new object
         });
       }
     },
@@ -188,7 +202,7 @@ export default {
         this.$router.push({
           query: ""
         });
-        this.currentPage =1;
+        this.currentPage = 1;
       }
     },
     async nextPage(pageNum) {
@@ -198,15 +212,7 @@ export default {
         }) // update the url query
       });
     },
-    searchButton() {
-      if (this.searchText !== "") {
-        this.$router.push({
-          query: Object.assign({}, this.$route.query, {
-            searchText: this.searchText
-          }) // update the url query
-        });
-      }
-    },
+
     getMetalType(result) {
       if (result === "G") {
         return "GOLD";
@@ -215,6 +221,17 @@ export default {
       } else {
         return "COPPER";
       }
+    },
+    getQueryassign() {
+      let tag = { tags: "hello|hi|salam" };
+      let query = {
+        tags: "john|dog"
+      };
+      console.log("before result", query);
+      let result = Object.assign({}, query, tag);
+      console.log("the result", result);
+
+      return result;
     }
   }
 };

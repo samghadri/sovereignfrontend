@@ -43,6 +43,7 @@ module.exports = {
   plugins: [
     "~/plugins/plugins.js",
     {src: '~/plugins/vue-paginate.js', ssr: false},
+    '~/plugins/axios.js',
   ],
 
   /*

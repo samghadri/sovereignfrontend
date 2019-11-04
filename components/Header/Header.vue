@@ -1,4 +1,5 @@
 <template>
+<div class="header-gradient">
   <b-navbar class="header-gradient" sticky toggleable="lg" type="dark"
             variant="info">
 
@@ -22,15 +23,19 @@
     <b-navbar-brand href="/">
           <img src="/img/edward-vii-logo.png" class="header-logo-ctr" alt="">
         </b-navbar-brand>
+
   </b-navbar>
+    <div class="container pb-2">
+     <Search v-if="this.$route.name !== 'sovereigns'"/>
+  </div>
+</div>
 </template>
 
 <script>
-
+import Search from '~/components/Search'
+export default {
+  components:{
+    Search
+  }
+}
 </script>
-<style>
-
-
-
-
-</style>

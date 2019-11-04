@@ -33,7 +33,7 @@ export const actions = {
                 console.log("worked");
                 commit("setCoin", success.data);
             }).catch(err =>{
-                commit('setError', err.message)
+              commit('setError', err.message)
             });
     },
     async getTag({ commit }) {
@@ -41,11 +41,7 @@ export const actions = {
             .then(result => {
                 console.log(result.data)
                 commit("setTag", result.data)
-            }).catch(err => {
-                console.log(err)
-            }
-
-            )
+            })
     },
 
     postContactForm({commit}, payload){

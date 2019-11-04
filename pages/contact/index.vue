@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container mt-5">
+    <div class="mt-5">
       <form>
         <div class="form-group">
           <label for="fullname">Full Name</label>
