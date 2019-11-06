@@ -9,6 +9,7 @@ export const getters = {
     getCoin: state => state.coins,
     getTag: state => state.tags,
     getError: state => state.error,
+    getToken:() => window.$nuxt.$cookies.get('token'),
 }
 
 
@@ -21,6 +22,11 @@ export const mutations = {
     },
     setError(state, payload) {
         state.error = payload
+      },
+      setCookie(state, payload) {
+        window.$nuxt.$cookies.set('token', payload, {
+          path: '/',
+        })
       },
 }
 export const actions = {
@@ -47,6 +53,15 @@ export const actions = {
     postContactForm({commit}, payload){
         this.$axios.post("contact", payload).then(res=>{
             console.log("message sent")
+        }).catch(err=>{
+            console.log(err)
+        })
+    },
+    Login({commit}, payload){
+        this.$axios.post("user/token", payload).then(res=>{
+            console.log(res)
+            commit('setCookie', res.data.token);
+              location.replace('/sovereigns')
         }).catch(err=>{
             console.log(err)
         })

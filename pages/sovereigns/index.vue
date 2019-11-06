@@ -72,6 +72,22 @@
               style="max-height:400px"
             >
           </div>
+          <div class="col-12 mt-4 text-center">
+            <div class="row">
+              <div class="col-6">
+                <p v-if="coin.grading_company"><span>Grading Company: </span>
+                <span v-if="coin.grading_company === 'P'">PCCS</span> <span v-else>NGC</span></p>
+              </div>
+              <div class="col-6">
+                <a v-if="coin.grading_company && 
+                coin.grading_company === 'P' && 
+                coin.certification_code" target="_blank" :href="'https://www.pcgs.com/cert/'+coin.certification_code">Check the certification</a>
+
+              </div>
+
+            </div>
+
+          </div>
         </div>
 
         <hr>
@@ -103,6 +119,7 @@ export default {
   components: {
     Search
   },
+  middleware:'auth',
   async mounted() {
     await this.$store.dispatch("getCoin", this.query ? this.query : "");
     await this.$store.dispatch("getTag");

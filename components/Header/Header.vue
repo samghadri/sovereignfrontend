@@ -18,6 +18,8 @@
         <b-nav-item href="/sovereigns">Sovereigns</b-nav-item>
         <b-nav-item href="/about">About</b-nav-item>
         <b-nav-item href="/contact">Contact</b-nav-item>
+<b-nav-item href="/login" v-if="!getToken">Login</b-nav-item>
+<b-nav-item @click="logout()" v-if="getToken">Logout</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
     <b-navbar-brand href="/">
@@ -36,6 +38,17 @@ import Search from '~/components/Search'
 export default {
   components:{
     Search
+  },
+  computed:{
+    getToken(){
+return this.$store.getters.getToken;
+    }
+  },
+  methods:{
+    logout(){
+      this.$cookies.removeAll()
+      location.replace("/login");
+    }
   }
 }
 </script>

@@ -1,9 +1,13 @@
 <template>
   <div>
+<no-ssr>
+
     <Header />
     <div class="container">
           <nuxt />
     </div>
+
+</no-ssr>
 
   </div>
 </template>
