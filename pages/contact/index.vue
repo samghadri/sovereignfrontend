@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mt-5">
-      <form>
+      <form v-on:submit.prevent="submitForm()">
         <div class="form-group">
           <label for="fullname">Full Name</label>
           <input
@@ -30,7 +30,7 @@
         </div>
         <div class="form-group">
           <label for="exampleFormControlTextarea1">Example textarea</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          <textarea v-model="TextArea" class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -38,3 +38,28 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  data(){
+    return{
+      EmailAddress:'',
+      fullName: '',
+      TextArea:''
+
+    }
+  },
+  methods:{
+    submitForm(){
+      let data ={
+        full_name: this.fullName,
+        email_address: this.EmailAddress,
+        description: this.TextArea,
+
+      };
+      this.$store.dispatch('postContactForm', data)
+
+    }
+
+  }
+}
+</script>

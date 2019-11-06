@@ -1,4 +1,7 @@
-export default ({$axios,store}) => {
+export default ({$axios,app, store}) => {
+  if (app.$cookies.get('token')) {
+      $axios.setToken(app.$cookies.get('token'), 'Token')
+  }
     $axios.onRequest((config) => {
     //   store.commit('setLoading', true, {root: true});
       store.commit('setError', null, {root: true});

@@ -30,9 +30,10 @@ export const mutations = {
       },
 }
 export const actions = {
-    async getCoin({ commit }, payload) {
+    async getCoin({ commit, getters }, payload) {
         await this.$axios
             .get("coins", {
+                // headers: {'Authorization':'Token ' +getters.getToken},
                 params: payload
             })
             .then(success => {
