@@ -16,7 +16,8 @@ export default ({$axios,app, store}) => {
   //    store.commit('setLoading', false, {root: true});
   console.log("didnt work", error.message)
 
-      store.commit('setError', error.message);
+      store.commit('setError', error.response.data);
+      console.log(error.response.data)
     //   setTimeout(() => {
     //     store.commit('setError', null, {root: true});
     //   }, 60000);

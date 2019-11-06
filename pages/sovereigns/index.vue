@@ -40,7 +40,6 @@
     <div class="text-right">
       <button class="btn btn-secondary" @click="clearFilter()">Clear Filter</button>
     </div>
-
     <div v-if="coins.result && coins.result.length > 0 ">
       <hr>
       <div v-for="coin in coins.result" :key="coin.id">
@@ -75,19 +74,26 @@
           <div class="col-12 mt-4 text-center">
             <div class="row">
               <div class="col-6">
-                <p v-if="coin.grading_company"><span>Grading Company: </span>
-                <span v-if="coin.grading_company === 'P'">PCCS</span> <span v-else>NGC</span></p>
+                <p v-if="coin.grading_company">
+                  <span>Grading Company:</span>
+                  <span v-if="coin.grading_company === 'P'">PCCS</span>
+                  <span v-else>NGC</span>
+                </p>
               </div>
               <div class="col-6">
-                <a v-if="coin.grading_company && 
+                <a
+                  v-if="coin.grading_company && 
                 coin.grading_company === 'P' && 
-                coin.certification_code" target="_blank" :href="'https://www.pcgs.com/cert/'+coin.certification_code">Check the certification</a>
-
+                coin.certification_code"
+                  target="_blank"
+                  :href="'https://www.pcgs.com/cert/'+coin.certification_code"
+                >Check the certification</a>
               </div>
-
             </div>
-
           </div>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary" v-on:click="showModal(coin.name, coin.id)">Make an Offer</button>
         </div>
 
         <hr>
@@ -110,16 +116,62 @@
         ></paginate>
       </div>
     </div>
+
+    <!-- modal -->
+    <b-modal id="sovModal" size="lg" centered ref="sovModal" hide-header hide-footer>
+      <button
+        style="margin-right:1rem;"
+        type="button"
+        class="close mt-2"
+        @click="closeModal()"
+        data-dismiss="modal"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      <div class="container">
+        <p>Hello {{userName}}</p>
+        <form v-on:submit.prevent="submitForm()" ref="offerForm">
+          <div class="form-group">
+            <label for="exampleInputName1">Name</label>
+            <input
+              type="email"
+              class="form-control"
+              id="exampleInputName1"
+              aria-describedby="emailHelp"
+              disabled
+              :value="sovModalName"
+            >
+          </div>
+          <div class="form-group">
+            <label for="exampleInputoffer1">offer</label>
+            <input
+              type="number"
+              class="form-control"
+              id="exampleInputoffer1"
+              v-model="CoinOffer"
+              placeholder="please enter your best offer "
+            >
+          </div>
+          <button type="submit" class="btn btn-primary" :disabled="showCondfirmation == true">Submit</button>
+        </form>
+        <p v-if="showCondfirmation" class="mt-3 mb-3 fomt-weight-bold">Offer Submited</p>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import Search from "~/components/Search";
+import { BModal } from "bootstrap-vue";
+
 export default {
   components: {
-    Search
+    Search,
+    BModal
   },
-  middleware:'auth',
+  middleware: "auth",
   async mounted() {
     await this.$store.dispatch("getCoin", this.query ? this.query : "");
     await this.$store.dispatch("getTag");
@@ -152,7 +204,11 @@ export default {
       },
       currentPage:
         this.$route.query.offset !== 0 ? this.$route.query.offset / 2 + 1 : 1,
-      searchText: ""
+      searchText: "",
+      sovModalName: "",
+      sovModalId: "",
+      CoinOffer: '',
+      showCondfirmation:false
     };
   },
   computed: {
@@ -167,6 +223,9 @@ export default {
     },
     error() {
       return this.$store.getters.getError;
+    },
+    userName() {
+      return this.$store.getters.getName;
     }
   },
   watch: {
@@ -249,6 +308,29 @@ export default {
       console.log("the result", result);
 
       return result;
+    },
+    showModal(sovereignName, sovereignId) {
+      this.$refs.sovModal.show();
+      this.sovModalName = sovereignName;
+      this.sovModalId = sovereignId;
+    },
+    submitForm(){
+      let data = {
+        person: this.userName,
+        offer: this.CoinOffer,
+        coin: this.sovModalName
+      }
+      this.$store.dispatch('postCoinOffer', data);
+      this.showCondfirmation = true;
+      
+    },
+    closeModal(){
+      this.$refs.offerForm.reset();
+      this.showCondfirmation = false;
+       this.sovModalName = ''
+       this.CoinOffer=''
+        this.$refs.sovModal.hide();
+
     }
   }
 };

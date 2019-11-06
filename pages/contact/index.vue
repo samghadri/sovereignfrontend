@@ -32,6 +32,9 @@
           <label for="exampleFormControlTextarea1">Example textarea</label>
           <textarea v-model="TextArea" class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
         </div>
+        <p v-if="error && error.full_name">fullname: {{error.full_name.toString()}}</p>
+        <p v-if="error && error.email_address">email: {{error.email_address.toString()}}</p>
+        <p v-if="error && error.description">fullname: {{error.description.toString()}}</p>
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
@@ -48,6 +51,11 @@ export default {
 
     }
   },
+  computed:{
+    error(){
+      return this.$store.getters.getError
+    }
+  },
   methods:{
     submitForm(){
       let data ={
@@ -56,7 +64,8 @@ export default {
         description: this.TextArea,
 
       };
-      this.$store.dispatch('postContactForm', data)
+      this.$store.dispatch('postContactForm', data);
+      this.$router.push('/thankyou');
 
     }
 
