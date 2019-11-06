@@ -18,8 +18,9 @@
         <b-nav-item href="/sovereigns">Sovereigns</b-nav-item>
         <b-nav-item href="/about">About</b-nav-item>
         <b-nav-item href="/contact">Contact</b-nav-item>
-<b-nav-item href="/login" v-if="!getToken">Login</b-nav-item>
-<b-nav-item @click="logout()" v-if="getToken">Logout</b-nav-item>
+        <b-nav-item href="/login" v-if="!getToken">Login</b-nav-item>
+        <b-nav-item @click="logout()" v-if="getToken">Logout</b-nav-item>
+        <b-nav-item href="/create-account" v-if="!getToken">Create Account</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
     <b-navbar-brand href="/">

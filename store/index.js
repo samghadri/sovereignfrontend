@@ -80,6 +80,11 @@ export const actions = {
         }).catch(err=>{
             console.log(err)
         })
+    },
+    createUser({commit}, payload){
+        this.$axios.post('user/create', payload).then(res=>{
+            console.log("user created")
+        })
     }
 
 
