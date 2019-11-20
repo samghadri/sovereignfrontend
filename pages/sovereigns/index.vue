@@ -263,7 +263,7 @@ export default {
         this.$router.push({
           query: Object.assign({}, this.$route.query, {
             tags: this.tags.join("|")
-          }) // update the url query | gets the query key and get the lat object an apend it into the new object if, key exist, then it will replace it with the new object
+          }) // update the url query | gets the query key and get the last object an apend it into the new object if, key exist, then it will replace it with the new object
         });
       }
     },
@@ -331,7 +331,17 @@ export default {
        this.CoinOffer=''
         this.$refs.sovModal.hide();
 
-    }
+    },
+    // IF USING LOAD MORE INSTEAD OF PAGINATION
+
+    // getNextResults() {
+    //     this.$router.push({
+    //       query: Object.assign({}, this.$route.query, {
+    //         limit: (this.query.limit += 3),
+    //         is_channel_article: this.query.is_channel_article,
+    //       })
+    //     });
+    //   },
   }
 };
 </script>
